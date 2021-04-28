@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+import calendar
+from datetime import datetime, timedelta, date
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
@@ -21,10 +22,10 @@ class CalendarView(generic.ListView):
         context = super().get_context_data(**kwargs)
 
         # use today's date for the calendar
-        d = get_date(self.request.GET.get('day', None))
+        day = get_date(self.request.GET.get('day', None))
 
         # Instantiate our calendar class with today's year and date
-        cal = Calendar(d.year, d.month)
+        cal = Calendar(day.year, day.month)
 
         # Call the formatmonth method, which returns our calendar as a table
         html_cal = cal.formatmonth(withyear=True)
@@ -39,16 +40,16 @@ def get_date(req_day):
     return datetime.today()
 
 
-def prev_month(d):
-    first = d.replace(day=1)
-    prev_month = first - timedelta(days=1)
-    month = 'month=' + str(prev_month.year) + '-' + str(prev_month.month)
+def prev_month(day):
+    first = day.replace(day=1)
+    previous_month = first - timedelta(days=1)
+    month = 'month=' + str(previous_month.year) + '-' + str(previous_month.month)
     return month
 
 
-def next_month(d):
-    days_in_month = calendar.monthrange(d.year, d.month)[1]
-    last = d.replace(day=days_in_month)
+def next_month(day):
+    days_in_month = calendar.monthrange(day.year, day.month)[1]
+    last = day.replace(day=days_in_month)
     next_month = last + timedelta(days=1)
     month = 'month=' + str(next_month.year) + '-' + str(next_month.month)
     return month
