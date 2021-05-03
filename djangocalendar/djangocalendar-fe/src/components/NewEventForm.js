@@ -3,7 +3,7 @@ import { Button, Form, FormGroup, Input, Label } from "reactstrap";
 
 import axios from "axios";
 
-import { API_URL } from "../constants";
+import { API_ALL_EVENTS_URL } from "../constants";
 
 class NewEventForm extends React.Component {
   state = {
@@ -27,7 +27,7 @@ class NewEventForm extends React.Component {
 
   createEvent = e => {
     e.preventDefault();
-    axios.post(API_URL, this.state).then(() => {
+    axios.post(API_ALL_EVENTS_URL, this.state).then(() => {
       this.props.resetState();
       this.props.toggle();
     });
@@ -35,7 +35,7 @@ class NewEventForm extends React.Component {
 
   editEvent = e => {
     e.preventDefault();
-    axios.put(API_URL + this.state.pk, this.state).then(() => {
+    axios.put(API_ALL_EVENTS_URL + this.state.pk, this.state).then(() => {
       this.props.resetState();
       this.props.toggle();
     });
