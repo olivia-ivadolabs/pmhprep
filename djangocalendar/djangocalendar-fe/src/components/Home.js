@@ -5,7 +5,7 @@ import NewEventModal from "./NewEventModal";
 
 import axios from "axios";
 
-import { API_URL } from "../constants";
+import { API_ALL_EVENTS_URL } from "../constants";
 
 class Home extends Component {
   state = {
@@ -17,7 +17,7 @@ class Home extends Component {
   }
 
   getEvents = () => {
-    axios.get(API_URL).then(res => this.setState({ events: res.data }));
+    axios.get(API_ALL_EVENTS_URL).then(res => this.setState({ events: res.data }));
   };
 
   resetState = () => {
