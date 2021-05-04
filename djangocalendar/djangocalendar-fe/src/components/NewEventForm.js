@@ -48,10 +48,6 @@ class NewEventForm extends React.Component {
         return value === "" ? "" : value;
     };
 
-    defaultDateIfEmpty = value => {
-        return ! value ? "" : new Date(value);
-    };
-
     constructor(props) {
         super(props)
         this.state = {
@@ -101,7 +97,7 @@ class NewEventForm extends React.Component {
                         name="start_time"
                         onChange={this.handleStartDateChange}
                         clearIcon={null}
-                        value={this.defaultDateIfEmpty(this.state.start_time)}
+                        value={this.defaultIfEmpty(new Date(this.state.start_time))}
                     />
                 </FormGroup>
                 <FormGroup>
@@ -110,7 +106,7 @@ class NewEventForm extends React.Component {
                         name="end_time"
                         onChange={this.handleEndDateChange}
                         clearIcon={null}
-                        value={this.defaultDateIfEmpty(new Date(this.state.end_time))}
+                        value={this.defaultIfEmpty(new Date(this.state.end_time))}
                     />
                 </FormGroup>
                 <Button>Send</Button>
