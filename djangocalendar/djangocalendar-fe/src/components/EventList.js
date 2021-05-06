@@ -8,7 +8,7 @@ class EventList extends Component {
   render() {
     const events = this.props.events;
     return (
-      <Table dark>
+      <Table light>
         <thead>
           <tr>
             <th>Title</th>
