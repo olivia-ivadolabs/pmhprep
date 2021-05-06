@@ -77,7 +77,7 @@ class App extends Component {
         const {cal_events} = this.state
 
         return (
-            <div className="App">
+            <div className="App" className="calendar-background">
                 <header className="App-header">
                     <h1 className="App-title">Event Calendar</h1>
                 </header>
@@ -90,7 +90,7 @@ class App extends Component {
                         views={['month', 'week', 'day']}
                         defaultDate={new Date()}
                     />
-                    <Home/>
+                    <Home className="calendar-background"/>
                 </div>
             </div>
         );
