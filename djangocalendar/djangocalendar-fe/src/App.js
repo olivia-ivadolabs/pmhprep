@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import { Calendar, momentLocalizer } from "react-big-calendar";
+import {Calendar, momentLocalizer} from "react-big-calendar";
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
@@ -11,6 +11,10 @@ import Home from "./components/Home";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import './App.css';
 import {API_ALL_EVENTS_URL} from "./constants";
+import WithPortal from "./components/DnDTable/with-portal";
+import {quotes} from "./data";
+import TaskApp from "./components/MultiDrag";
+import SemanticUITable from "./components/SemanticUIDnDTable";
 
 moment.locale('en-GB');
 const localizer = momentLocalizer(moment);
@@ -91,6 +95,21 @@ class App extends Component {
                         defaultDate={new Date()}
                     />
                     <Home className="calendar-background"/>
+                    <div style={{
+                        borderTop: "2px solid #ADD8E6 ",
+                        marginTop: 40,
+                        marginLeft: 20,
+                        marginRight: 20,
+                        marginBottom: 40
+                    }}></div>
+                    <div className='rowC'>
+                        <div className='colC'>
+                            <WithPortal initial={quotes}/>
+                        </div>
+                        <div className='colC'>
+                            <TaskApp/>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
