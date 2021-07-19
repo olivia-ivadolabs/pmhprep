@@ -10,12 +10,7 @@ from rest_framework.response import Response
 
 from .models import *
 from .serializers import EventSerializer
-from .templates.forms import EventForm
 from .utils import Calendar
-
-
-def index(request):
-    return HttpResponse('hello')
 
 
 class CalendarView(generic.ListView):
@@ -42,21 +37,6 @@ def get_date(req_day):
         year, month = (int(x) for x in req_day.split('-'))
         return date(year, month, day=1)
     return datetime.today()
-
-
-def prev_month(day):
-    first = day.replace(day=1)
-    previous_month = first - timedelta(days=1)
-    month = 'month=' + str(previous_month.year) + '-' + str(previous_month.month)
-    return month
-
-
-def next_month(day):
-    days_in_month = calendar.monthrange(day.year, day.month)[1]
-    last = day.replace(day=days_in_month)
-    next_month = last + timedelta(days=1)
-    month = 'month=' + str(next_month.year) + '-' + str(next_month.month)
-    return month
 
 
 def event(request, event_id=None):
