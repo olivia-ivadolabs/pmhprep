@@ -45,7 +45,7 @@ class App extends Component {
     }
 
     convertDate = (date) => {
-        return moment.utc(date).toDate()
+        return moment(date).toDate()
     }
 
     componentDidMount() {
