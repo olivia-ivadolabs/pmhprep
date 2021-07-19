@@ -1,6 +1,4 @@
 from django.db import models
-from django.urls import reverse
-from django.core.exceptions import ValidationError
 
 
 class Event(models.Model):
