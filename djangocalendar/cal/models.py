@@ -8,5 +8,6 @@ class Appointment(models.Model):
 
 
 class Shift(models.Model):
+    title = models.CharField(max_length=200)
     begin_shift = models.DateTimeField()
     end_shift = models.DateTimeField()

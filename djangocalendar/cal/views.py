@@ -10,16 +10,16 @@ def db_connect():
     connect_to_db()
 
 
-@api_view(['GET', 'POST'])
+@api_view(["GET", "POST"])
 def appointment_list(request):
-    if request.method == 'GET':
+    if request.method == "GET":
         appointments = fetch_appointments()
 
-        serializer = AppointmentSerializer(appointments, context={'request': request}, many=True)
+        serializer = AppointmentSerializer(appointments, context={"request": request}, many=True)
 
         return Response(serializer.data)
 
-    elif request.method == 'POST':
+    elif request.method == "POST":
         serializer = AppointmentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -28,8 +28,8 @@ def appointment_list(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def shift_list(request):
-    shifts = fetch_begin_and_end_shift('2021-01-01', '2021-01-30')
-    serializer = ShiftSerializer(shifts, context={'request': request}, many=True)
+    shifts = fetch_begin_and_end_shift("2021-01-01", "2021-01-30")
+    serializer = ShiftSerializer(shifts, context={"request": request}, many=True)
     return Response(serializer.data)

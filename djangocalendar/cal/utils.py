@@ -4,6 +4,8 @@ from typing import Tuple, List
 from neomodel import db
 
 
+# Ideally we want to put the db connect info in settings.py.
+# For some reason it didn't work so we put it here to connect to db.
 def connect_to_db():
     db.set_connection("bolt://neo4j:password@localhost:7687")
 
@@ -62,8 +64,11 @@ def fetch_begin_and_end_shift(start_date: str, end_date: str
             RETURN datetime(t1.start) AS beginShift, datetime(t2.end) AS endShift
         """,
     )
-    return [({"begin_shift": bs.to_native(), "end_shift": es.to_native()}) for bs, es in results]
+    return [({"title": "Time shift", "begin_shift": bs.to_native(), "end_shift": es.to_native()}) for bs, es in results]
 
+
+# This function to fetch the patient information. In future we wil need to fetch the unscheduled patients'
+# information and add WHERE statements as filters. We will update below query and function accordingly.
 
 # def fetch_patient_info():
 #     results, _ = db.cypher_query(

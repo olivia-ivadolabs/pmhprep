@@ -1,18 +1,19 @@
-import React, {Component} from 'react';
+import React, {Component} from "react";
 
 import {Calendar, momentLocalizer} from "react-big-calendar";
-import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
-import axios from 'axios'
+import axios from "axios"
 
 import Home from "./components/Home";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import './App.css';
+import "./App.css";
 import {API_ALL_APPOINTMENTS_URL} from "./constants";
+import {API_ALL_SHIFTS_URL} from "./constants";
 
-moment.locale('en-GB');
+moment.locale("en-GB");
 const localizer = momentLocalizer(moment);
 
 class App extends Component {
@@ -21,9 +22,8 @@ class App extends Component {
         super(props)
 
         this.state = {
-            cal_events: [
-                //State is updated via componentDidMount
-            ],
+            cal_events: [],
+            cal_shifts: [],
         }
 
     }
@@ -42,6 +42,7 @@ class App extends Component {
 
                     appointments[i].start = this.convertDate(appointments[i].start_time)
                     appointments[i].end = this.convertDate(appointments[i].end_time)
+                    appointments[i].backgroundColor = "#4287f5";
 
                 }
 
@@ -53,51 +54,62 @@ class App extends Component {
             .catch(function (error) {
                 console.log(error);
             });
+        axios.get(API_ALL_SHIFTS_URL)
+            .then(response => {
+                console.log(response.data);
+                let shifts = response.data;
+
+                for (let i = 0; i < shifts.length; i++) {
+
+                    shifts[i].start = this.convertDate(shifts[i].begin_shift)
+                    shifts[i].end = this.convertDate(shifts[i].end_shift)
+                    shifts[i].backgroundColor = "#a0bf6d";
+
+                }
+
+                this.setState({
+                    cal_shifts: shifts
+                })
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
-    calendarStyle1 = () => {
-        return {
-            style: {
-                backgroundColor: '#4287f5', //this works
-                color: 'black' //but why doesn't this work?
-            }
-        }
-    }
 
-    calendarStyle2 = () => {
-        return {
-            style: {
-                backgroundColor: '#e0f0d1', //this works
-                color: 'black' //but why doesn't this work?
-            }
-        }
-    }
+render()
+{
 
+    const {cal_events} = this.state
+    const {cal_shifts} = this.state
 
-    render() {
+    return (
+        <div className="App" className="calendar-background">
+            <header className="App-header">
+                <h1 className="App-title">Event Calendar</h1>
+            </header>
+            <div style={{height: 700}}>
+                <Calendar
+                    localizer={localizer}
+                    events={cal_events.concat(cal_shifts)}
+                    step={30}
+                    defaultView="week"
+                    views={["month", "week", "day"]}
+                    defaultDate={new Date()}
+                    // eventPropGetter={(this.calendarStyle1)}
+                    eventPropGetter={event => ({
+                        style: {
+                            backgroundColor: event.backgroundColor,
+                        },
+                    })}
 
-        const {cal_events} = this.state
-
-        return (
-            <div className="App" className="calendar-background">
-                <header className="App-header">
-                    <h1 className="App-title">Event Calendar</h1>
-                </header>
-                <div style={{height: 700}}>
-                    <Calendar
-                        localizer={localizer}
-                        events={cal_events}
-                        step={30}
-                        defaultView='week'
-                        views={['month', 'week', 'day']}
-                        defaultDate={new Date()}
-                        eventPropGetter={(this.calendarStyle1)}
-                    />
-                    <Home className="calendar-background"/>
-                </div>
+                />
+                <Home className="calendar-background"/>
             </div>
-        );
-    }
+        </div>
+    );
+}
 }
 
 export default App;
