@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import { Calendar, momentLocalizer } from "react-big-calendar";
+import {Calendar, momentLocalizer} from "react-big-calendar";
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
@@ -10,7 +10,7 @@ import Home from "./components/Home";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import './App.css';
-import {API_ALL_EVENTS_URL} from "./constants";
+import {API_ALL_APPOINTMENTS_URL} from "./constants";
 
 moment.locale('en-GB');
 const localizer = momentLocalizer(moment);
@@ -26,7 +26,7 @@ class App extends Component {
     }
 
     getEvents = () => {
-        axios.get(API_ALL_EVENTS_URL).then(res => this.setState({events: res.data}));
+        axios.get(API_ALL_APPOINTMENTS_URL).then(res => this.setState({events: res.data}));
     };
 
     resetState = () => {
@@ -49,7 +49,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        axios.get('http://localhost:8000/api/appointments/')
+        axios.get(API_ALL_APPOINTMENTS_URL)
             .then(response => {
                 console.log(response.data);
                 let appointments = response.data;
@@ -71,6 +71,24 @@ class App extends Component {
             });
     }
 
+    calendarStyle1 = () => {
+        return {
+            style: {
+                backgroundColor: '#4287f5', //this works
+                color: 'black' //but why doesn't this work?
+            }
+        }
+    }
+
+    calendarStyle2 = () => {
+        return {
+            style: {
+                backgroundColor: '#e0f0d1', //this works
+                color: 'black' //but why doesn't this work?
+            }
+        }
+    }
+
 
     render() {
 
@@ -89,6 +107,7 @@ class App extends Component {
                         defaultView='week'
                         views={['month', 'week', 'day']}
                         defaultDate={new Date()}
+                        eventPropGetter={(this.calendarStyle1)}
                     />
                     <Home className="calendar-background"/>
                 </div>

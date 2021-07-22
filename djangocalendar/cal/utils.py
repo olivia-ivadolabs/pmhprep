@@ -62,4 +62,14 @@ def fetch_begin_and_end_shift(start_date: str, end_date: str
             RETURN datetime(t1.start) AS beginShift, datetime(t2.end) AS endShift
         """,
     )
-    return [(bs.to_native(), es.to_native()) for bs, es in results]
+    return [({"begin_shift": bs.to_native(), "end_shift": es.to_native()}) for bs, es in results]
+
+
+# def fetch_patient_info():
+#     results, _ = db.cypher_query(
+#     f"""
+#         match(p: Patient) optional
+#         match(c: Cancer) < -[: OF]-(d:Diagnosis) < -[: HAS]-(p)
+#         return c, collect(d), collect(p)
+#     """,
+#     )
