@@ -17,22 +17,6 @@ const localizer = momentLocalizer(moment);
 
 class App extends Component {
 
-    state = {
-        events: []
-    };
-
-    componentDidMount() {
-        this.resetState();
-    }
-
-    getEvents = () => {
-        axios.get(API_ALL_APPOINTMENTS_URL).then(res => this.setState({events: res.data}));
-    };
-
-    resetState = () => {
-        this.getEvents();
-    };
-
     constructor(props) {
         super(props)
 
