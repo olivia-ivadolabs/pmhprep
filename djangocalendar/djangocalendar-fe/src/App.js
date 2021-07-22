@@ -56,7 +56,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        axios.get('http://localhost:8000/api/events/')
+        axios.get('http://localhost:8000/api/appointments/')
             .then(response => {
                 console.log(response.data);
                 let appointments = response.data;

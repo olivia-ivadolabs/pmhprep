@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Table } from "reactstrap";
-import NewEventModal from "./NewEventModal";
 
-import ConfirmRemovalModal from "./ConfirmRemovalModal";
 
 class EventList extends Component {
   render() {
@@ -29,21 +27,8 @@ class EventList extends Component {
             events.map(event => (
               <tr key={event.pk}>
                 <td>{event.title}</td>
-                <td>{event.description}</td>
                 <td>{event.start_time}</td>
                 <td>{event.end_time}</td>
-                <td align="center">
-                  <NewEventModal
-                    create={false}
-                    event={event}
-                    resetState={this.props.resetState}
-                  />
-                  &nbsp;&nbsp;
-                  <ConfirmRemovalModal
-                    pk={event.pk}
-                    resetState={this.props.resetState}
-                  />
-                </td>
               </tr>
             ))
           )}

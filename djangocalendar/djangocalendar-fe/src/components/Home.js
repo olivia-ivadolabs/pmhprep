@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Col, Container, Row } from "reactstrap";
 import EventList from "./EventList";
-import NewEventModal from "./NewEventModal";
 
 import axios from "axios";
 
@@ -33,11 +32,6 @@ class Home extends Component {
               events={this.state.events}
               resetState={this.resetState}
             />
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <NewEventModal create={true} resetState={this.resetState} />
           </Col>
         </Row>
       </Container>
