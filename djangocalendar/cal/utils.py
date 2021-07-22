@@ -38,7 +38,7 @@ def fetch_begin_and_end_shift(
 
     Returns
     -------
-    The start_shift and end_shift of each shift of all machines.
+    The start_shift and end_shift of each shift of machines.
     """
 
     results, _ = self.cypher(
