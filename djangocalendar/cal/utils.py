@@ -4,6 +4,10 @@ from typing import Tuple, List
 from neomodel import db
 
 
+def connect_to_db():
+    db.set_connection("bolt://neo4j:password@localhost:7687")
+
+
 def fetch_appointments() -> List[Tuple[int, str, datetime, datetime]]:
     """
     Cypher query to fetch all appointments.
@@ -13,7 +17,6 @@ def fetch_appointments() -> List[Tuple[int, str, datetime, datetime]]:
     The key and time for the appointments.
     """
 
-    db.set_connection("bolt://neo4j:password@localhost:7687")
     results, _ = db.cypher_query(
         f"""
             MATCH (e:Event)-[:SCHEDULED]->(a:Appointment)-[:AT]->(t:TimeSlot)
@@ -25,9 +28,8 @@ def fetch_appointments() -> List[Tuple[int, str, datetime, datetime]]:
             for i, a, s, e in results]
 
 
-def fetch_begin_and_end_shift(
-        self, start_date: str, end_date: str
-) -> List[Tuple[datetime, datetime]]:
+def fetch_begin_and_end_shift(start_date: str, end_date: str
+                              ) -> List[Tuple[datetime, datetime]]:
     """
     Cypher query to fetch begin and end shift timeslots for each day.
 
@@ -41,7 +43,7 @@ def fetch_begin_and_end_shift(
     The start_shift and end_shift of each shift of the machine
     """
 
-    results, _ = self.cypher(
+    results, _ = db.cypher_query(
         f"""
             WITH date("{start_date}") AS startDate, date("{end_date}") AS endDate
             WITH startDate, duration.indays(startDate, endDate) AS daysInBetween
