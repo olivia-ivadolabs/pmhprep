@@ -1,1 +1,1 @@
-export const API_ALL_EVENTS_URL = "http://localhost:8000/api/events/";
+export const API_ALL_EVENTS_URL = "http://localhost:8000/api/appointments/";

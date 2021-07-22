@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from .models import Event
+from .models import Appointment
 
 
-class EventSerializer(serializers.ModelSerializer):
+class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Event
-        fields = ('pk', 'title', 'description', 'start_time', 'end_time')
+        model = Appointment
+        fields = ('pk', 'title', 'start_time', 'end_time')

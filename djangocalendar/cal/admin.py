@@ -1,12 +1,9 @@
-import calendar
-import datetime
-
 from django.contrib import admin
-from cal.models import Event
-from django.urls import reverse
+from cal.models import Appointment
 
 
-class EventAdmin(admin.ModelAdmin):
-    list_display = ['title', 'description', 'start_time', 'end_time']
-   
-admin.site.register(Event, EventAdmin)
+class AppointmentAdmin(admin.ModelAdmin):
+    list_display = ['title', 'start_time', 'end_time']
+
+
+admin.site.register(Appointment, AppointmentAdmin)
