@@ -54,7 +54,7 @@ def fetch_begin_and_end_shift(start_date: str, end_date: str
             WITH startDate + duration({{days: dayNum}}) AS eachDate
             MATCH (m:Machine)-[:AT]->(ts:TimeSlot)
             WHERE date(datetime(ts.start)) = eachDate
-            WITH m, collect(ts) AS tsAvilable
+            WITH m, collect(ts) AS tsAvailable
             MATCH (t0:TimeSlot)-[:NEXT]->(t1:TimeSlot)
             MATCH p = (t1)-[:NEXT*]->(t2:TimeSlot)
             MATCH (t2)-[:NEXT]->(t3:TimeSlot)
@@ -105,33 +105,29 @@ def fetch_computed_appointment_time(earliest: str, latest: str
              RETURN p.key AS patientId, d.key AS diagnosisId, c.region AS cancerRegion, c.stage AS cancerStage, 
              e.key AS eventId, a.type AS activityType, t.name AS technique, e.duration AS durationInMins, 
              m.name AS machine, datetime(t1.start) AS computedEarliestTime, datetime(t2.end) AS computedLatestTime
+             ORDER BY computedEarliestTime
         """,
     )
-    return [({
-        "patient_id": patientId,
-        "diagnosis_id": diagnosisId,
-        "cancer_region": cancerRegion,
-        "cancer_stage": cancerStage,
-        "event_id": eventId,
-        "activity_type": activityType,
-        "technique": technique,
-        "duration_in_mins": durationInMins,
-        "machine": machine,
-        "earliest_date": earliest,
-        "latest_date": latest,
-        "computedEarliestTime": computedEarliestTime.to_native(),
-        "computedLatestTime": computedLatestTime.to_native()
-    }) for patientId,
-           diagnosisId,
-           cancerRegion,
-           cancerStage,
-           eventId,
-           activityType,
-           technique,
-           durationInMins,
-           machine,
-           computedEarliestTime,
-           computedLatestTime in results]
+    return [
+        (
+            {
+                "patient_id": p,
+                "diagnosis_id": d,
+                "cancer_region": cr,
+                "cancer_stage": cs,
+                "event_id": e,
+                "activity_type": a,
+                "technique": t,
+                "duration_in_mins": d,
+                "machine": m,
+                "earliest_date": earliest,
+                "latest_date": latest,
+                "computedEarliestTime": cet.to_native(),
+                "computedLatestTime": clt.to_native(),
+            }
+        )
+        for p, d, cr, cs, e, a, t, d, m, cet, clt in results
+    ]
 
 
 # This function is to fetch the patient information. In future we wil need to fetch the unscheduled patients'

@@ -97,7 +97,6 @@ render()
                     defaultView="week"
                     views={["month", "week", "day"]}
                     defaultDate={new Date()}
-                    // eventPropGetter={(this.calendarStyle1)}
                     eventPropGetter={event => ({
                         style: {
                             backgroundColor: event.backgroundColor,
