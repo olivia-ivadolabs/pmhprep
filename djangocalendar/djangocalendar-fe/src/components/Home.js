@@ -4,11 +4,13 @@ import EventList from "./EventList";
 
 import axios from "axios";
 
-import { API_ALL_EVENTS_URL } from "../constants";
+import {API_ALL_COMPUTED_APPOINTMENT_TIME_URL, API_ALL_APPOINTMENTS_URL} from "../constants";
+import ComputedEventList from "./ComputedEventList";
 
 class Home extends Component {
   state = {
-    events: []
+    events: [],
+    computed_events: []
   };
 
   componentDidMount() {
@@ -16,7 +18,8 @@ class Home extends Component {
   }
 
   getEvents = () => {
-    axios.get(API_ALL_EVENTS_URL).then(res => this.setState({ events: res.data }));
+    axios.get(API_ALL_APPOINTMENTS_URL).then(res => this.setState({ events: res.data }));
+    axios.get(API_ALL_COMPUTED_APPOINTMENT_TIME_URL).then(res => this.setState({ computed_events: res.data }));
   };
 
   resetState = () => {
@@ -27,9 +30,16 @@ class Home extends Component {
     return (
       <Container style={{ marginTop: "40px" }}>
         <Row>
+          {/* Comment it for now. If we need to display the scheduled appointments, just uncomment below codes.*/}
+          {/*<Col>*/}
+          {/*  <EventList*/}
+          {/*    events={this.state.events}*/}
+          {/*    resetState={this.resetState}*/}
+          {/*  />*/}
+          {/*</Col>*/}
           <Col>
-            <EventList
-              events={this.state.events}
+            <ComputedEventList
+              computed_events={this.state.computed_events}
               resetState={this.resetState}
             />
           </Col>

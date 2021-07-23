@@ -4,6 +4,8 @@ from typing import Tuple, List
 from neomodel import db
 
 
+# Ideally we want to put the db connect info in settings.py.
+# For some reason it didn't work so we put it here to connect to db.
 def connect_to_db():
     db.set_connection("bolt://neo4j:password@localhost:7687")
 
@@ -62,4 +64,80 @@ def fetch_begin_and_end_shift(start_date: str, end_date: str
             RETURN datetime(t1.start) AS beginShift, datetime(t2.end) AS endShift
         """,
     )
-    return [(bs.to_native(), es.to_native()) for bs, es in results]
+    return [({"title": "Time shift", "begin_shift": bs.to_native(), "end_shift": es.to_native()}) for bs, es in results]
+
+
+def fetch_computed_appointment_time(earliest: str, latest: str
+                                    ) -> List[Tuple[str, str, str, int, str, str, str, int,
+                                                    str, str, str, datetime, datetime]]:
+    """
+    Cypher query to fetch computed appointment time slots for unscheduled events.
+    Need to add ignored_appointments in the future.
+
+    Parameters
+    ----------
+    earliest: the earliest time for scheduling the event
+    latest: the latest time for scheduling the event
+
+    Returns
+    -------
+    The table as in jira ticket: https://ivado-labs.atlassian.net/browse/DRMAR-81
+    """
+
+    results, _ = db.cypher_query(
+        f"""
+            MATCH (p:Patient)-[:HAS]->(d:Diagnosis)-[:REQUIRES]->(e:Event)-[:REQUIRES]->(t:Technic)<-[:IS_ABLE_TO]
+            -(m:Machine)-[:AT]->(ts:TimeSlot),
+            (d)-[:OF]->(c:Cancer),
+            (e)-[:IS]->(a:Activity)
+            WHERE DATE(DATETIME(ts.start)) >= DATE("{earliest}")
+             AND DATE(DATETIME(ts.end)) <= DATE("{latest}")
+            WITH d,p,e,t,m,c,a,collect(ts) AS availableTs
+            MATCH timeslot = (t1:TimeSlot)-[:NEXT*0..]->(t2 :TimeSlot)
+            WHERE ALL(n in nodes(timeslot) where n in availableTs)
+            // Below is to compare if remove the duration of the event itself, 
+            // whether the rest of time is less than 15min.
+             AND localdatetime() 
+             < (localdatetime()
+             + DURATION.between(DATETIME(t1.start), DATETIME(t2.end))
+             - DURATION({{minutes:e.duration}}))
+             < (localdatetime() + DURATION.between(DATETIME(t1.start), DATETIME(t1.end)))
+             RETURN p.key AS patientId, d.key AS diagnosisId, c.region AS cancerRegion, c.stage AS cancerStage, 
+             e.key AS eventId, a.type AS activityType, t.name AS technique, e.duration AS durationInMins, 
+             m.name AS machine, datetime(t1.start) AS computedEarliestTime, datetime(t2.end) AS computedLatestTime
+             ORDER BY computedEarliestTime
+        """,
+    )
+    return [
+        (
+            {
+                "patient_id": p,
+                "diagnosis_id": d,
+                "cancer_region": cr,
+                "cancer_stage": cs,
+                "event_id": e,
+                "activity_type": a,
+                "technique": t,
+                "duration_in_mins": d,
+                "machine": m,
+                "earliest_date": earliest,
+                "latest_date": latest,
+                "computedEarliestTime": cet.to_native(),
+                "computedLatestTime": clt.to_native(),
+            }
+        )
+        for p, d, cr, cs, e, a, t, d, m, cet, clt in results
+    ]
+
+
+# This function is to fetch the patient information. In future we wil need to fetch the unscheduled patients'
+# information and add WHERE statements as filters. We will update the query below and the function accordingly.
+
+# def fetch_patient_info():
+#     results, _ = db.cypher_query(
+#     f"""
+#         match(p: Patient) optional
+#         match(c: Cancer) < -[: OF]-(d:Diagnosis) < -[: HAS]-(p)
+#         return c, collect(d), collect(p)
+#     """,
+#     )

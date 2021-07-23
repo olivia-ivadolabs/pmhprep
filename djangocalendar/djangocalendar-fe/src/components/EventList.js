@@ -8,9 +8,9 @@ class EventList extends Component {
     return (
       <Table light>
         <thead>
+        <tr>Scheduled appointments</tr>
           <tr>
             <th>Title</th>
-            <th>Description</th>
             <th>Start time</th>
             <th>End time</th>
             <th></th>
